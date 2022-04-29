@@ -8,25 +8,27 @@ Microservice boilerplate for marketplace app
 
 | Services              | Container            | Stack                           | Ports               |
 | --------------------- | -------------------- | ------------------------------- | ------------------- |
-| **BE**                |                      |                                 |                     |
+| **Packages**          |                      |                                 |                     |
+| App Type Definitions  |                      |                                 | -                   |
+| UI Design system      | web-ui               | TS, React, Tailwind, Storybook  | -                   |
+| **Data**              |                      |                                 |                     |
 | Redis                 | redis                | Redis                           | 6379                |
 | Queue                 | rabbitmq             | RabbitMQ                        | 5672                |
 | Postgres              | postgres             | Postgres                        | 5432                |
 | MongoDB               | mongo                | MongoDB                         | 27017               |
 | Static, proxy, cache  | nginx                | Nginx                           | 80/443              |
-| API Gateway, Api docs | gateway              | TS, NestJS, Http, REST          | 8080                |
+| **Applications**      |                      |                                 |                     |
 | User CRUD service     | user-service         | TS, NestJS, TCP, Pg             | 8081                |
 | Auth CRUD service     | auth-service         | TS, NestJS, TCP, Redis          | 8082                |
 | Shop CRUD service     | shop-service         | TS, NestJS, TCP, Pg             | 8083                |
 | Product CRUD service  | product-service      | TS, NestJS, TCP, Mongo          | 8084                |
 | Order CRUD service    | order-service        | TS, NestJS, AMQP, Mongo         | 8085                |
 | Notification service  | notification-service | TS, NestJS, AMQP                | 8086                |
-| **FE**                |                      |                                 |                     |
-| UI Design system      | web-ui               | TS, React, Tailwind, Storybook  | -                   |
+| API Gateway, Api docs | gateway              | TS, NestJS, Http, REST          | 8080                |
 | Web client            | web                  | TS, NextJS(ssr), Swr, web-ui    | 3000                |
 | Docs web client       | docs-web             | TS, NextJS(isr), web-ui         | 3001                |
 | Shop web client       | shop-web             | TS, Webpack(csr), Redux, web-ui | 3002                |
-| admin web client      | admin-web            | TS, Webpack(csr), Redux, web-ui | 3003                |
+| Admin web client      | admin-web            | TS, Webpack(csr), Redux, web-ui | 3003                |
 
 ### BE
 
