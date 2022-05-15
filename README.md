@@ -4,31 +4,48 @@ Microservice boilerplate for marketplace app
 
 ## Architecture
 
-> npm monorepo(lerna, yarn workspaces)
+> npm monorepo(lerna, yarn workspaces), docker/cubernates
 
-| Services              | Container            | Stack                           | Ports               |
-| --------------------- | -------------------- | ------------------------------- | ------------------- |
-| **Packages**          |                      |                                 |                     |
-| App Type Definitions  |                      |                                 | -                   |
-| UI Design system      | web-ui               | TS, React, Tailwind, Storybook  | -                   |
-| **Data**              |                      |                                 |                     |
-| Redis                 | redis                | Redis                           | 6379                |
-| Queue                 | rabbitmq             | RabbitMQ                        | 5672                |
-| Postgres              | postgres             | Postgres                        | 5432                |
-| MongoDB               | mongo                | MongoDB                         | 27017               |
-| Static, proxy, cache  | nginx                | Nginx                           | 80/443              |
-| **Applications**      |                      |                                 |                     |
-| User CRUD service     | user-service         | TS, NestJS, TCP, Pg             | 8081                |
-| Auth CRUD service     | auth-service         | TS, NestJS, TCP, Redis          | 8082                |
-| Shop CRUD service     | shop-service         | TS, NestJS, TCP, Pg             | 8083                |
-| Product CRUD service  | product-service      | TS, NestJS, TCP, Mongo          | 8084                |
-| Order CRUD service    | order-service        | TS, NestJS, AMQP, Mongo         | 8085                |
-| Notification service  | notification-service | TS, NestJS, AMQP                | 8086                |
-| API Gateway, Api docs | gateway              | TS, NestJS, Http, REST          | 8080                |
-| Web client            | web                  | TS, NextJS(ssr), Swr, web-ui    | 3000                |
-| Docs web client       | docs-web             | TS, NextJS(isr), web-ui         | 3001                |
-| Shop web client       | shop-web             | TS, Webpack(csr), Redux, web-ui | 3002                |
-| Admin web client      | admin-web            | TS, Webpack(csr), Redux, web-ui | 3003                |
+| Services              | Container            | Stack                           | Ports  |
+| --------------------- | -------------------- | ------------------------------- | ------ |
+| Redis                 | redis                | Redis                           | 6379   |
+| Queue                 | rabbitmq             | RabbitMQ                        | 5672   |
+| Postgres              | postgres             | Postgres                        | 5432   |
+| MongoDB               | mongo                | MongoDB                         | 27017  |
+| Static, proxy, cache  | nginx                | Nginx                           | 80/443 |
+| **Packages**          |                      |                                 |        |
+| App Type Definitions  | types                | TS                              | -      |
+| Core microservice     | core-service         | TS, NestJS                      | -      |
+| UI Design system      | ui                   | TS, React, Tailwind, Storybook  | -      |
+| **Services**          |                      |                                 |        |
+| User CRUD service     | user-service         | TCP, Pg, core-service           | 8081   |
+| Auth CRUD service     | auth-service         | TCP, Redis, core-service        | 8082   |
+| Shop CRUD service     | shop-service         | TCP, Pg, core-service           | 8083   |
+| Product CRUD service  | product-service      | TCP, Mongo, core-service        | 8084   |
+| Order CRUD service    | order-service        | AMQP, Mongo, core-service       | 8085   |
+| Notification service  | notification-service | AMQP, core-service              | 8086   |
+| API Gateway, Api docs | gateway              | Http, REST, Swagger, TS, NestJS | 8080   |
+| Web client            | web                  | TS, NextJS(ssr), Swr, ui/web    | 3000   |
+| Docs web client       | web-docs             | TS, NextJS(isr), ui/web         | 3001   |
+| Shop web client       | web-shop             | TS, Webpack(csr), Redux, ui/web | 3002   |
+| Admin web client      | web-admin            | TS, Webpack(csr), Redux, ui/web | 3003   |
+
+## Packages
+
+### App Type Definitions
+
+### Core microservice
+
+### UI Design system
+
+- tokens
+  - sizes[]
+  - colors[]
+- icons
+- hooks[]
+- components[Button,ActionButton,Table,List,Card,Selector,Multiselector,PaginationBlock,Tabs,Form,Input]
+
+## Services
 
 ### BE
 
@@ -66,8 +83,10 @@ Microservice boilerplate for marketplace app
     - read: user info
     - delete: logout
 - **Shop CRUD microservice**
+
   - STACK: tcp transport, pg
   - MODELS
+
     - `Shop`[id,slug!,name!,description?,rating(1-5)!,createdAt!,image!,promoted!,deletedAt?,locationId!,partnership(s|sd|sdd)!]
     - `Employee`[id!,userId!,shopId!,role!]
     - `Depot`[id!,name!,locationId!,geo!,decription?,image?,createdAt!,deletedAt?]
@@ -79,6 +98,7 @@ Microservice boilerplate for marketplace app
     - `UserCoupon`[id!,userId!,couponId!]
     - `Brand`[id!,slug!,name!,image!,promoted!]
     - `Highlight`[id!,slug!,name!,image!,endsAt?,promoted!]
+
   - API:
     - create
       - cooperation types:
@@ -92,9 +112,12 @@ Microservice boilerplate for marketplace app
     - read
     - update
     - delete: soft delete
+
 - **Product CRUD microservice**
+
   - STACK: tcp transport, mongo(embedding)
   - MODELS
+
     - `Product`[id!,slug!,shopId!,brandId!,categoryId!,name!,description(md)!,count!,rating(0-5)!,views(0),createdAt!,deliveryDays!,promoted!,deletedAt?,medias[url?],prices[{price!,discount?,createdAt!}],highlights[highlightId?],features[{feature,value}]]
     - `Feature`[id!,label!,value!,productId!]
     - `Category`[id!,slug!,categoryId,name!,description?,image?,createdAt!,features!{}]
@@ -103,10 +126,13 @@ Microservice boilerplate for marketplace app
     - `Review`[id!,userId!,productId!,hideUser?,likes(0),createdAt!,responses[Discussion?],pros!,cons!,comment(md)?,rating(1-5)!]
     - `UserProduct`[id!,userId!,productId!]
     - `CardProduct`[id!,userId!,productId!,count!]
+
   - API
+
     - create
     - read
       /api/v1/pro
+
       - content: [categoriesTree, priceRange, brandsMultiselect, shopsMultiselect, highlightsMultiselect, ...categoryFeaturesMultiselect]
       - req:
         - filters: text=grass|category=3242|brand=8978789|shop=869879|highlight=23489
@@ -150,6 +176,7 @@ Microservice boilerplate for marketplace app
 
     - update
     - delete: soft delete
+
 - **Order CRUD microservice**
   - STACK:
     - amqp tarnsport[soft load, batching(prefetchCount), schedule(rabbitmq_delayed_message_exchange)]
@@ -186,7 +213,7 @@ Microservice boilerplate for marketplace app
     - user-service
   - API:
     - email: ack if email successfully sent
-    - sms:  ack if sms successfully sent
+    - sms: ack if sms successfully sent
     - push: ack if push not available(auth-service) || successfully sent
     - notify:
       - ack if successfully sent notification in user-service
@@ -195,14 +222,7 @@ Microservice boilerplate for marketplace app
 
 ### FE
 
-#### UI Design system
-
-- sizes[]
-- colors[]
-- hooks[]
-- components[Button,ActionButton,Table,List,Card,Selector,Multiselector,PaginationBlock,Tabs,Form,Input]
-
-#### Web client (marketplaceapp, csr+ssr)
+#### Web client (marketplaceapp, isr/ssr)
 
 1. **Account layout**(form)
 2. **Main layout**(header, content[NonProductSelection, ProductSelection, ProductDetails, Card, Order, My], footer)
@@ -262,7 +282,7 @@ Microservice boilerplate for marketplace app
      - `/checkout?`
        - DATA:
        - CONTENT:
-       - ACTIONS: payOrder(*strapi*, POST /api/v1/orders)
+       - ACTIONS: payOrder(_strapi_, POST /api/v1/orders)
      - `/location`
        - DATA: GET /api/v1/products/:id, GET /api/v1/
        - CONTENT: preview[medias, description, delivery_conditions], feautures, reviews/discussions(PATCH /api/v1/products/:id), previously_viewed/promoted?
@@ -374,9 +394,9 @@ Microservice boilerplate for marketplace app
        - CONTENT: card[]
        - ACTIONS: link(/${targetlink}) -->
 
-#### Admin web client (admin.marketplaceapp)
+#### Admin web client (admin.marketplaceapp, csr)
 
--moderation new product/discussion/review/brand/shop/highlight  active(true|'')
+-moderation new product/discussion/review/brand/shop/highlight active(true|'')
 -catalogs? categories management
 -shops management
 -promotion management
@@ -468,3 +488,19 @@ Microservice boilerplate for marketplace app
    make prod-build
    make prod
    ```
+
+@marketplaceapp/types
+@marketplaceapp/types
+@marketplace/ui
+
+@marketplace/user-service
+@marketplace/auth-service
+@marketplace/shop-service
+@marketplace/product-service
+@marketplace/order-service
+@marketplace/notification-service
+@marketplace/gateway
+@marketplace/web
+@marketplace/docs-web
+@marketplace/shop-web
+@marketplace/admin-web
