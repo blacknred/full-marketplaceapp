@@ -12,7 +12,7 @@ Microservice boilerplate for marketplace app
 | Queue                 | rabbitmq             | RabbitMQ                        | 5672   |
 | Postgres              | postgres             | Postgres                        | 5432   |
 | MongoDB               | mongo                | MongoDB                         | 27017  |
-| Static, proxy, cache  | nginx                | Nginx                           | 80/443 |
+| Proxy/cache, FE serve | nginx                | Nginx                           | 80/443 |
 | **Packages**          |                      |                                 |        |
 | App Type Definitions  | types                | TS                              | -      |
 | Core microservice     | core-service         | TS, NestJS                      | -      |
